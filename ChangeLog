@@ -1,0 +1,117 @@
+0.1:
+First release.
+
+0.1.1:
+Should run stable now.
+Removed select().
+Frame speed added.
+jpeg processing no longer via file, but direct.
+Auto restart if camera power down or network problem.
+No motion detection and clock yet, this is a bugfix release.
+More examples added to README
+
+0.2:
+Added on screen clock
+
+0.3:
+Now sends a HTTP/1.1 request.
+Added -Wall and -O2 as compile flags.
+Fixed all warnings except for date format (depends on locale).
+Removed statics in get_time_as_string();
+Fixed IP address generation for print.
+Fixed more programming errors.
+Moved some stdout to stderr, and some printf to fprintf(stderr, 
+so as to no screw op output to stdout.
+Updated website http://panteltje.com/panteltje/mcamip/
+for hardware.
+
+0.4:
+Added 10 ms delay before read(), this reduces processor load.
+It also reduces speed at which the camera gets read.
+Set KEEP_ALIVE option in socket.
+Made default port and default IP a define in mcamip.h
+Added program name to border of X display.
+Added motion detection, -c flag.
+Added motion detection threshold -e flag.
+Increased http_buffer size 10x to prevent overflow on slow PC and in -v.
+
+0.5:
+Added jpeg single picture output (-j flag).
+Updated README.
+
+0.6:
+Fixed disconnect problem by adding Referer field in http request.
+It seems the DCS-900 uses this within a couple of minutes after connect
+to verify the suplied username and pasword against.
+If no match, then the DCS-900 stops sending data from /video.cgi.
+Added control for recorded frames per second (when camera set to auto). 
+Added a counter in the jpeg frame directory to keep the last recorded picure number.
+
+0.7:
+Added more header info in HTTP request, such as program name , Linux, X11.
+Added -z camera stream output to stdout.
+Added reporting and warning of low frames per second.
+Added display of true frame speed and warning if frame speed lower the requested.
+Removed space after FRAME in yuv output, this was a bug, now it also works with ffmpeg and transcode.
+Added examples for ffmpeg and transcode encoding in README.
+
+0.7.1:
+Fixes in README only.
+
+0.7.2:
+Low frame speed detection warning with date over 2 lines.
+Low frame speed detection at .75x requested.
+Added display of version, server_name and server port in X windows frame.
+Added date and time if speed warning or jpeg lib errors.
+
+0.7.3:
+Added server re-connect when read() returns 0 (EOF).
+Changed other errors then EAGAIN in read() to server re-connect.
+Added date + time in connect_to_server(), removed it from main loop read timeout and EOF.
+Simplified error message in read timeout and EOF.
+Added semaphore file for motion detection, so other programs can test this, -i flag.
+
+0.7.4:
+Reversed u and v so alphabetical order in usage display.
+Fixed to '~/frames' in usage.
+Added patch by Robert Light <robert_light@verizon.net>, it uses averaging of the light intensity to make
+motion detection work better in low light.
+Added configure, some name changes, for example CHANGES to ChangeLog, LICENSE to COPYING, etc, to be
+compatible with configure.
+
+0.7.5:
+Decode separate to rgb24.
+Clock now also in X output.
+Clock added in rgb24 with new routine in alpha_num.c.
+Made better YUV encoding by using al l4 pixels, this is needed so color text can be displayed.
+Added user text on screen from ~/mcamip_os.txt, file read each second.
+Allowed left right bottom top scrolling text in text_to_rgb24_buffer() in alphanum.c
+Updated README, manual.
+Added quiet '-q' option.
+
+
+0.7.6: 
+Added -b flag for no color in YUV output.
+Bluntly copied the ffmpeg color CCIT spec conversion defines, to match ffmpeg and mplayer colors.
+Other conversions are also in the source, comment out some if you like to play.
+
+0.7.7:
+The first pixel in a picture was still coded with the old color standard.. fixed it.
+Removed double defines in video.c and alpha_num.c.
+Added frame_number displat top left with '-n' flag.
+Allowed multiple line in ~/mcam_os.txt.
+Allowed comment character '#' in ~/mcam_os.txt.
+Removed text_to_yuv_buffer() from alphanum.c.
+Read timeout alert in video.c now uses text_to_rgb24_buffer, and always works on both X and YUV out.
+
+0.7.8:
+Added set io buffer to zero in main.
+Added flush(stdout) in video.c
+This to shorten delays.
+Fixed a neg array subscript in color aasignent to u and v in video.c,
+u and v now only taken from odd pixels in odd lines, and averaged over 4.
+
+
+
+
+

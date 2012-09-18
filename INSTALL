@@ -1,0 +1,36 @@
+                                     Installing mcamip-0.7.4
+
+
+mcamip needs libmath, libjpeg, and X with Xlib, libXaw, and libXt installed to compile.
+
+To compile type:
+./configure
+make
+make install
+
+
+Note:
+ If you used configure, and had an older version of mcamip installed using xmkmf, delete the old manual:
+ rm /usr/X11R6/man/man1/mcamip.1x
+ This because the new manual goes in /usr/local/man/man1/mcamip.1x, the old manual was empty, but
+ needs to be removed to prevent 'man' from finding it first.
+
+
+Alternative method:
+if you have Imake installed:
+xmkmf
+make
+make install
+make install.man
+
+
+More info in README.
+
+After install you can type:
+man mcamip
+
+And for command line options:
+mcamip -h
+
+
+
