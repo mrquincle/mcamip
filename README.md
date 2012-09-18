@@ -3,7 +3,7 @@
 Disclaimer: code is written by Jan Panteltje, see: http://panteltje.com/panteltje/mcamip
 This github repository exists to make it easy to compile on modern Ubuntu distros (>12.10)
 
-## How to use
+## How to use mcamip
 
 Please try
 
@@ -12,6 +12,8 @@ Please try
 for a list of all options and defaults.
 
 All defaults are set as #defines in mcamip.h, you can change these if you like.
+
+### A semaphore file as indicator for motion events
 
 Motion detection threshold will be higher for 640x480, setting the correct level for your situation needs some experimenting.
 In motion detection only frames with sufficient change are output on the stdout (-y).
@@ -39,35 +41,40 @@ Example of using the semaphore file in bash, when using mcamip -y -c -s 5000 -i 
 	    }
 	done
 
-Examples for camera on IP address 10.0.0.151 port 81, and camera4 added in /etc/hosts:
+### Examples
 
-The frame speed you get is what you specify with -f, default is 20 fps.
- *Please set the camera to 'automatic' in the video setup menu.*
+The frame speed you get is what you specify with -f, default is 20 fps. *Please set the camera to 'automatic' in the video setup menu.*
+
+Just watch the (any) camera:
+
+	mcamip -a IPADDRESS -p PORT -u USERNAME -w PASSWORD -x
 
 Visual output via mplayer:
 
-	mcamip -a 10.0.0.151 -p 81 -y | mplayer -fs -
+	mcamip -a IPADDRESS -p PORT -y | mplayer -fs -
 
 Show just a picture in X windows:
 
-	mcamip -a 10.0.0.151 -p 81 -x
+	mcamip -a IPADDRESS -p PORT -x
 
 Encode to mpeg4 AVI:
 
-	mcamip -a camera4 -p 81 -y -u USERNAME -w PASSWORD | mencoder -  -o title2.avi -oac copy -ovc lavc
+	mcamip -a IPADDRESS -p PORT -y -u USERNAME -w PASSWORD | mencoder -  -o title2.avi -oac copy -ovc lavc
 
 Encode to mpeg4 AVI with on screen clock bottom middle in UTC (Greenwich time), and set playback speed to 25 fps:
 
-	mcamip -t -f 25 -a camera4 -p 81 -x -y -g -u USERNAME -w PASSWORD | mencoder -  -o title2.avi -oac copy -ovc lavc
+	mcamip -t -f 25 -a IPADDRESS -p PORT -x -y -g -u USERNAME -w PASSWORD | mencoder -  -o title2.avi -oac copy -ovc lavc
 
 Encode with motion detection to an AVI file:
 
-	mcamip -e 1000 -c -u USERNAME -w PASSWORD -f 16 -t -a camera4 -p 80 -x -y |\
+	mcamip -e 1000 -c -u USERNAME -w PASSWORD -f 16 -t -a IPADDRESS -p 80 -x -y |\
 	mencoder -  -o /huge/recording.avi -oac copy -ovc lavc
 
-Write single frames if motion detected to ~/framedir/ , no X display:
+Write single frames if motion detected to ~/mypictures/frames/, no X display:
 
 	mcamip -c -e 1000 -t -a IPADDRESS -p PORT -j -u USERNAME -w PASSWORD
+
+### Frames explained...
 
 You can list these in sequence with:
 
@@ -87,20 +94,21 @@ Display all .jpg images in sequence:
 
 	xv -wait 1 mcamip.*.jpg
 
-Just watch the (any) camera:
+### Use ffmpeg
 
-	mcamip -a IPADDRESS -p PORT -u USERNAME -w PASSWORD -x
+Encode with ffmpeg version 0.4.8 (from 2004-02-22, some other versions seem to differ):
 
-
-Encode with ffmpeg version 0.4.8 (from 2004 02 22, some other versions seem to differ):
-
-	mcamip -x -u USERNAME -w PASSWORD -f 2 -t -a 10.0.0.151 -p 80 -y | \
+	mcamip -x -u USERNAME -w PASSWORD -f 2 -t -a IPADDRESS -p 80 -y | \
 	ffmpeg -f yuv4mpegpipe -i - -f avi -vcodec mpeg4 -b 800 -g 300 -bf 2 -y camera4.avi
+
+### Use transcode for DivX4
 
 Encode with transcode (v0.6.11, later version may have different options) to DivX4, in transcode you must specify the size, and the -z flag reverses the upside down picture: It uses the old DivX 4 codec, you can find it [here](ftp://panteltje.com/pub/divx_codecs/divx4linux-20011010_4.02.tgz), and the old transcode [here](ftp://panteltje.com/pub/transcode/transcode-0.6.11.tar.gz).
 
-	mcamip -x -u USERNAME -w PASSWORD -f 2 -t -a 10.0.0.151 -p 80 -y | \
+	mcamip -x -u USERNAME -w PASSWORD -f 2 -t -a IPADDRESS -p 80 -y | \
 	transcode -f 2 -i /dev/fd/0 -g 320x240 -x yuv4mpeg,null -y divx4 -z -o camera4.avi
+
+### Use ffmpeg for H264
 
 Encode with latest ffmpeg version to H264, in the background (I use this one), if you re-start a new filename will be created.
 
@@ -108,7 +116,7 @@ Encode with latest ffmpeg version to H264, in the background (I use this one), i
 	serial_number=`/bin/cat /video/mcamip_serial.txt`
 	/bin/echo "serial_number=$serial_number"
 
-	nice -n 19 mcamip -x -f 2 -t -a 10.0.0.151 -p 80 -u panteltje -w r2 -y 2>>~/mcamip-log | \
+	nice -n 19 mcamip -x -f 2 -t -a IPADDRESS -p 80 -u panteltje -w r2 -y 2>>~/mcamip-log | \
 	nice -n 19 ffmpeg -f yuv4mpegpipe -i - -f avi -vcodec h264 -b 80 -g 300 -bf 2 -y /video/camera4-$serial_number.avi \
 	1>/dev/zero 2>/dev/zero &
 
@@ -116,6 +124,8 @@ Encode with latest ffmpeg version to H264, in the background (I use this one), i
 	let serial_number=serial_number+1 
 	/bin/echo $serial_number > /video/mcamip_serial.txt
 
+
+### Low-bandwith AVI stream
 
 Send a low bandwidth AVI stream to a remote client in a one to one session using netcat:
 First have the receiver side started (this example uses port 1234, use whatever gets you past firewalls etc.).
@@ -130,7 +140,7 @@ Then start the server side (where the camera is, with the IP address of the rece
 
 
 ## Notes
-It seems in this version of the firmware that uses server push with video.cgi, you need to set only ONE port open in the router to allow external access. So in the router network translation table, if camera is at 10.0.0.151 port 80, and you also run a web server on port 80, translate external port 81 to 10.0.0.151:80. (You can define an other port then 81 for access of course).
+It seems in this version of the firmware that uses server push with video.cgi, you need to set only ONE port open in the router to allow external access. So in the router network translation table, if camera is at IPADDRESS port 80, and you also run a web server on port 80, translate external port 81 to IPADDRESS:80. (You can define an other port then 81 for access of course).
 
 ## Bugs
 If you get lines in the X windows picture, or multiple folded pictures on screen, look in x11.c around line 61, and try uncommenting an other value for display_bits, perhaps 24, then do a 
