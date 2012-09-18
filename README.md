@@ -13,8 +13,7 @@ for a list of all options and defaults.
 
 All defaults are set as #defines in mcamip.h, you can change these if you like.
 
-Motion detection threshold will be higher for 640x480, setting the correct level
-for your situation needs some experimenting.
+Motion detection threshold will be higher for 640x480, setting the correct level for your situation needs some experimenting.
 In motion detection only frames with sufficient change are output on the stdout (-y).
 You can see if something is encoded by looking at fps displayed by mencoder.
 The X windows display will always display normally.
@@ -98,13 +97,7 @@ Encode with ffmpeg version 0.4.8 (from 2004 02 22, some other versions seem to d
 	mcamip -x -u USERNAME -w PASSWORD -f 2 -t -a 10.0.0.151 -p 80 -y | \
 	ffmpeg -f yuv4mpegpipe -i - -f avi -vcodec mpeg4 -b 800 -g 300 -bf 2 -y camera4.avi
 
-Encode with transcode (v0.6.11, later version may have different options) to DivX4, in transcode you must specify the size, and the -z flag reverses the upside down picture: It uses the old DivX 4 codec, you can find it here: 
-
-	ftp://panteltje.com/pub/divx_codecs/divx4linux-20011010_4.02.tgz
-
-and the old transcode:
-
-	ftp://panteltje.com/pub/transcode/transcode-0.6.11.tar.gz
+Encode with transcode (v0.6.11, later version may have different options) to DivX4, in transcode you must specify the size, and the -z flag reverses the upside down picture: It uses the old DivX 4 codec, you can find it [here](ftp://panteltje.com/pub/divx_codecs/divx4linux-20011010_4.02.tgz), and the old transcode [here](ftp://panteltje.com/pub/transcode/transcode-0.6.11.tar.gz).
 
 	mcamip -x -u USERNAME -w PASSWORD -f 2 -t -a 10.0.0.151 -p 80 -y | \
 	transcode -f 2 -i /dev/fd/0 -g 320x240 -x yuv4mpeg,null -y divx4 -z -o camera4.avi
